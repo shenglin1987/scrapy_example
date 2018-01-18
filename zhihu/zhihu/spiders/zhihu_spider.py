@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding:utf-8 -*-
 """
 一个简单的Python爬虫, 用于抓取coursera网站的下载链接和pdf
@@ -22,7 +21,7 @@ class ZhihuSipder(CrawlSpider) :
     name = "zhihu"
     allowed_domains = ["www.zhihu.com"]
     start_urls = [
-        "http://www.zhihu.com"
+        "http://passport.oa.com/modules/passport/signin.ashx#", 'http://dcloud.oa.com/'
     ]
     rules = (
         Rule(SgmlLinkExtractor(allow = ('/question/\d+#.*?', )), callback = 'parse_page', follow = True),
@@ -35,28 +34,29 @@ class ZhihuSipder(CrawlSpider) :
     "Connection": "keep-alive",
     "Content-Type":" application/x-www-form-urlencoded; charset=UTF-8",
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36",
-    "Referer": "http://www.zhihu.com/"
+    "Referer": "http://passport.oa.com/"
     }
 
     #重写了爬虫类的方法, 实现了自定义请求, 运行成功后会调用callback回调函数
     def start_requests(self):
-        return [Request("https://www.zhihu.com/login", meta = {'cookiejar' : 1}, callback = self.post_login)]
+        return [Request("http://passport.oa.com/modules/passport/signin.ashx#", meta = {'cookiejar' : 1}, callback = self.post_login)]
 
     #FormRequeset出问题了
     def post_login(self, response):
         print 'Preparing login'
         #下面这句话用于抓取请求网页后返回网页中的_xsrf字段的文字, 用于成功提交表单
-        xsrf = Selector(response).xpath('//input[@name="_xsrf"]/@value').extract()[0]
-        print xsrf
+        #xsrf = Selector(response).xpath('//input[@name="_xsrf"]/@value').extract()[0]
+        #print xsrf
         #FormRequeset.from_response是Scrapy提供的一个函数, 用于post表单
         #登陆成功后, 会调用after_login回调函数
         return [FormRequest.from_response(response,   #"http://www.zhihu.com/login",
                             meta = {'cookiejar' : response.meta['cookiejar']},
                             headers = self.headers,
                             formdata = {
-                            '_xsrf': xsrf,
-                            'email': '123456',
-                            'password': '123456'
+                            'txtLoginName': 'henryslzhao',
+                            'txtPasswordType': '1',
+                            'txtPassword': 'a270164A',
+                            'isOutlookSelect':'true',
                             },
                             callback = self.after_login,
                             dont_filter = True
@@ -68,11 +68,7 @@ class ZhihuSipder(CrawlSpider) :
 
     def parse_page(self, response):
         problem = Selector(response)
-        item = ZhihuItem()
-        item['url'] = response.url
-        item['name'] = problem.xpath('//span[@class="name"]/text()').extract()
-        print item['name']
-        item['title'] = problem.xpath('//h2[@class="zm-item-title zm-editable-content"]/text()').extract()
-        item['description'] = problem.xpath('//div[@class="zm-editable-content"]/text()').extract()
-        item['answer']= problem.xpath('//div[@class=" zm-editable-content clearfix"]/text()').extract()
-        return item
+        body = response.body
+        with open('body.txt', 'w') as f:
+            f.write(body)
+            f.close()
