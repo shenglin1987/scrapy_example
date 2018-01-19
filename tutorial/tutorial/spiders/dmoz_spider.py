@@ -4,14 +4,13 @@
 from scrapy.spider import Spider
 from scrapy.selector import Selector
 from tutorial.items import DmozItem 
-
+import scrapy
             
 class DmozSpider(Spider):
     name = "dmoz"
-    allowed_domains = ["dmoz.org"]
+    site = 'http://www.quanjing.com'
     start_urls = [
-        "http://www.dmoz.org/Computers/Programming/Languages/Python/Books/",
-        "http://www.dmoz.org/Computers/Programming/Languages/Python/Resources/",
+      'http://www.quanjing.com/category/104-1.html',
     ]
 
     def parse(self, response):
@@ -21,15 +20,29 @@ class DmozSpider(Spider):
         @url http://www.dmoz.org/Computers/Programming/Languages/Python/Resources/
         @scrapes name
         """
-        sel = Selector(response)
-        sites = sel.xpath('//ul[@class="directory-url"]/li')
-        items = []
+        img_urls = response.xpath('//*[@id="ulImgHolder"]/li/span[1]/a/@href').extract()
+        for img_url in img_urls:
+            #print 'img_url: ', img_url
+            img_url = self.site + img_url
+            yield scrapy.Request(img_url.encode('utf-8'), callback=self.parse_next_page)
 
-        for site in sites:
-            item = DmozItem()
-            item['name'] = site.xpath('a/text()').extract()
-            item['url'] = site.xpath('a/@href').extract()
-            item['description'] = site.xpath('text()').re('-\s[^\n]*\\r')
-            items.append(item)
+    def parse_next_page(self, response):
+        #print 'in function: parse_next_page'
+        #print 'response page: ', response.url
+   
+        try:
+            img_urls = response.xpath('//*[@id="gallery-list"]/li/a/@href').extract()
+            #print img_urls
+        except:
+            print 'img_url extract exception: ', img_urls
+        for img_url in img_urls:
+            img_url = self.site + img_url
+            #print 'img_url: ', img_url
+            yield scrapy.Request(img_url.encode('utf-8'), callback=self.parse_details)
 
-        return items
+
+    def parse_details(self, response):
+        img_url = response.xpath('//*[@id="picurl"]/@src').extract()[0]
+        print 'img_url: ', img_url
+        
+
