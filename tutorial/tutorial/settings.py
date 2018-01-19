@@ -63,7 +63,7 @@ ROBOTSTXT_OBEY = False
 #}
 
 # Configure item pipelines
-ITEM_PIPELINES = {'tutorial.pipelines.TutorialPipeline': 200}
+#ITEM_PIPELINES = {'tutorial.pipelines.TutorialPipeline': 200}
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
      'tutorial.pipelines.TutorialPipeline': 1,
@@ -71,7 +71,7 @@ ITEM_PIPELINES = {
     #'tutorial.pipelines.TutorialFilePipeline',
     # 'jobboleSpider.pipelines.JsonWithEncodingPipeline':2,
     # 'jobboleSpider.pipelines.MysqlPipeline':3
-    'tutorial.pipelines.TutorialMysqlPipeline',
+   # 'tutorial.pipelines.TutorialMysqlPipeline',
 }
 
 #用于设置图片的下载问题，并制定图片下载路径
