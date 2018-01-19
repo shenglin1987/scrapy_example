@@ -13,9 +13,10 @@ Debug = False
 class DmozSpider(Spider):
     name = "dmoz"
     site = 'http://www.quanjing.com'
-    start_urls = [
-      'http://www.quanjing.com/category/104-1.html',
-    ]
+    start_urls = []
+    for i in range(102,130):
+        start_urls.append('http://www.quanjing.com/category/%d-1.html'%i)
+    
 
     def parse(self, response):
         """
