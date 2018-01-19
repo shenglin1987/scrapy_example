@@ -7,7 +7,7 @@ from tutorial.items import DmozItem
 import scrapy
 
 global Debug
-Debug = True
+Debug = False
 
 
 class DmozSpider(Spider):
@@ -59,4 +59,7 @@ class DmozSpider(Spider):
             print 'img_tags: ', img_tags
             for img_tag in img_tags:
                 print img_tag
-
+        img_item = DmozItem()
+        img_item['img_url'] = img_url
+        img_item['img_tags'] = img_tags
+        yield img_item

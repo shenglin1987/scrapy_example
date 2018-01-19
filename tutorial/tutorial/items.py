@@ -9,7 +9,9 @@ from scrapy.item import Item, Field
 
 class DmozItem(Item):
     # define the fields for your item here like:
-    name = Field()
+    title = Field()
     description = Field()
-    url = Field()
+    img_url = Field()
+    img_tags = Field()
+
 
