@@ -5,7 +5,11 @@ from scrapy.spider import Spider
 from scrapy.selector import Selector
 from tutorial.items import DmozItem 
 import scrapy
-            
+
+global Debug
+Debug = True
+
+
 class DmozSpider(Spider):
     name = "dmoz"
     site = 'http://www.quanjing.com'
@@ -42,7 +46,17 @@ class DmozSpider(Spider):
 
 
     def parse_details(self, response):
+        if Debug:
+            print 'response to url: ', response.url
+
         img_url = response.xpath('//*[@id="picurl"]/@src').extract()[0]
-        print 'img_url: ', img_url
-        
+        img_tags = response.xpath('//*[@id="Ul1"]/li/a').extract()
+        import re
+        img_tags = [re.findall('>.*<', item, re.U)[0].strip('><') for item in img_tags]
+
+        if Debug:
+            print 'img_url: ', img_url
+            print 'img_tags: ', img_tags
+            for img_tag in img_tags:
+                print img_tag
 
