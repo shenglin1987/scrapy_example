@@ -18,7 +18,9 @@ class DmozSpider(Spider):
         #baby
       #  start_urls.append('http://www.quanjing.com/category/103003/%d.html'%i)
         #think
-        start_urls.append('http://www.quanjing.com/category/124014/%d.html'%i)
+       # start_urls.append('http://www.quanjing.com/category/124014/%d.html'%i)
+        #stand
+        start_urls.append('http://www.quanjing.com/category/124002/%d.html'%i)
         
 
 #    def parse(self, response):
